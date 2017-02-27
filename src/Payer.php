@@ -6,7 +6,7 @@ use Fei\ApiClient\RequestDescriptor;
 use Fei\ApiClient\ResponseDescriptor;
 use Fei\Service\Payment\Client\Utils\SearchBuilder;
 use Fei\Service\Payment\Entity\Payment;
-use Fei\Service\Payment\Exception\PaymentException;
+use Fei\Service\Payment\Client\Exception\PaymentException;
 use Guzzle\Http\Exception\BadResponseException;
 
 /**
@@ -121,7 +121,7 @@ class Payer extends AbstractApiClient implements PayerInterface
     public function send(RequestDescriptor $request, $flags = 0)
     {
         try {
-            $response = parent::send($request, $flags);
+            $response = $this->callSendInParent($request, $flags);
 
             if ($response instanceof ResponseDescriptor) {
                 return $response;
@@ -140,5 +140,18 @@ class Payer extends AbstractApiClient implements PayerInterface
         }
 
         return null;
+    }
+
+    /**
+     * Call the send method of the parent (method that can be mocked)
+     *
+     * @param RequestDescriptor $request
+     * @param int $flags
+     *
+     * @return bool|ResponseDescriptor
+     */
+    protected function callSendInParent(RequestDescriptor $request, $flags = 0)
+    {
+        return parent::send($request, $flags);
     }
 }
