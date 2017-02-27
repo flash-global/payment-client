@@ -124,8 +124,6 @@ class Payer extends AbstractApiClient implements PayerInterface
             $response = parent::send($request, $flags);
 
             if ($response instanceof ResponseDescriptor) {
-                //$body = \json_decode($response->getBody(), true);
-
                 return $response;
             }
         } catch (\Exception $e) {

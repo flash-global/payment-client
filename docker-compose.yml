@@ -1,0 +1,21 @@
+version: '2'
+services:
+    php:
+        build: docker/images/php
+        volumes:
+            - ./docker/config/apache2:/etc/apache2/sites-enabled
+            - ./docker/config/php/custom.ini:/usr/local/etc/php/conf.d/custom.ini
+            - ./:/var/www/html
+        container_name: payment-client_php
+        networks:
+            vpcbr:
+                ipv4_address: 10.14.0.2
+        ports:
+            - 9020:80
+networks:
+  vpcbr:
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 10.14.0.0/16
+         gateway: 10.14.0.1
