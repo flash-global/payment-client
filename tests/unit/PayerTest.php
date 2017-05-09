@@ -5,8 +5,11 @@ use Codeception\Test\Unit;
 use Codeception\Util\Stub;
 use Fei\ApiClient\RequestDescriptor;
 use Fei\ApiClient\ResponseDescriptor;
+use Fei\ApiClient\Transport\SyncTransportInterface;
 use Fei\Service\Payment\Client\Exception\PaymentException;
 use Fei\Service\Payment\Client\Payer;
+use Fei\Service\Payment\Client\Utils\SearchBuilder;
+use Fei\Service\Payment\Entity\Payment;
 use Guzzle\Http\Exception\BadResponseException;
 
 /**
@@ -18,22 +21,127 @@ class PayerTest extends Unit
 {
     public function testRequest()
     {
+        $payer = new Payer();
+
+        $payment = $this->getPaymentEntity();
+
+        $request1 = new RequestDescriptor();
+
+        $transport = $this->createMock(SyncTransportInterface::class);
+        $transport->expects($this->once())->method('send')->withConsecutive(
+            [$this->callback(function (RequestDescriptor $requestDescriptor) use (&$request1) {
+                return $request1 = $requestDescriptor;
+            })]
+        )->willReturnOnConsecutiveCalls(
+            (new ResponseDescriptor())->setBody(1)
+        );
+        $payer->setTransport($transport);
+
+        $results = $payer->request($payment);
+
+        $this->assertEquals(1, $results);
     }
 
     public function testRetrieve()
     {
+        $payment = new Payment([
+            'id' => 1,
+            'status' => Payment::STATUS_ERRORED
+        ]);
+        $payment->setCreatedAt($payment->getCreatedAt()->format('c'));
+
+        $payer = new Payer();
+
+        $request1 = new RequestDescriptor();
+
+        $transport = $this->createMock(SyncTransportInterface::class);
+        $transport->expects($this->once())->method('send')->withConsecutive(
+            [$this->callback(function (RequestDescriptor $requestDescriptor) use (&$request1) {
+                return $request1 = $requestDescriptor;
+            })]
+        )->willReturnOnConsecutiveCalls(
+            (new ResponseDescriptor())->setBody(json_encode([
+                "data" => [
+                    "id" => $payment->getId(),
+                    "status" => $payment->getStatus(),
+                    'createdAt' => $payment->getCreatedAt()->format('c'),
+                    'uuid' => $payment->getUuid()
+                ],
+                "meta" => [
+                    "entity" => "Fei\\Service\\Payment\\Entity\\Payment"
+                ]
+            ]))
+        );
+        $payer->setTransport($transport);
+
+        $results = $payer->retrieve(1);
+
+        $this->assertEquals($payment, $results);
+    }
+
+    public function testRetrieveNoTransportSet()
+    {
+        $payer = new Payer();
+
+        $this->expectException(PaymentException::class);
+        $this->expectExceptionMessage('No transport has been set!');
+
+        $payer->retrieve(1);
     }
 
     public function testSearch()
     {
+        $payment = new Payment([
+            'id' => 1,
+            'status' => Payment::STATUS_ERRORED
+        ]);
+        $payment->setCreatedAt($payment->getCreatedAt()->format('c'));
+
+        $payer = new Payer();
+
+        $request1 = new RequestDescriptor();
+
+        $transport = $this->createMock(SyncTransportInterface::class);
+        $transport->expects($this->once())->method('send')->withConsecutive(
+            [$this->callback(function (RequestDescriptor $requestDescriptor) use (&$request1) {
+                return $request1 = $requestDescriptor;
+            })]
+        )->willReturnOnConsecutiveCalls(
+            (new ResponseDescriptor())->setBody(json_encode([
+                'payments' => [ $payment->toArray() ]
+            ]))
+        );
+        $payer->setTransport($transport);
+
+        $results = $payer->search(new SearchBuilder());
+
+        $this->assertEquals([$payment], $results);
     }
 
     public function testCancel()
     {
+        $payer = Stub::make(Payer::class, [
+            'updateStatusWithReason' => Stub::once(function () {
+                return 1;
+            })
+        ]);
+
+        $results = $payer->cancel(1, 'fake-reason');
+
+        $this->assertEquals(1, $results);
     }
 
     public function testReject()
     {
+        $payer = Stub::make(Payer::class, [
+            'updateStatusWithReason' => Stub::once(function () {
+                return 1;
+            })
+        ]);
+
+        $results = $payer->reject(1, 'fake-reason');
+
+        $this->assertEquals(1, $results);
     }
 
     public function testUpdateAmount()
@@ -107,12 +215,19 @@ class PayerTest extends Unit
         $this->assertNull($results);
     }
 
-    protected function invokeNonPublicMethod($object, $name, array $args = [])
+    protected function getPaymentEntity()
     {
-        $reflection = new \ReflectionClass($object);
-        $method = $reflection->getMethod($name);
-        $method->setAccessible(true);
+        $payment = new Payment();
 
-        return $method->invokeArgs($object, $args);
+        $payment->setCallbackUrl(['http://fake-url.fr'])
+            ->setAuthorizedPayment(Payment::PAYMENT_PAYPAL)
+            ->setCallbackUrlEvent('succeeded', 'http://fake-url.fr/succeeded')
+            ->setExpirationDate(new \DateTime())
+            ->setRequiredPrice(10.0)
+            ->setId(1)
+            ->setStatus(Payment::STATUS_PENDING)
+            ->setUuid('fake-uuid');
+
+        return $payment;
     }
 }

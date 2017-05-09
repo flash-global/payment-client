@@ -43,7 +43,7 @@ interface PayerInterface
      * @param mixed $payment can be an int or a Payment entity
      * @param int $reason
      *
-     * @return void
+     * @return int
      */
     public function cancel($payment, $reason);
 
@@ -53,28 +53,9 @@ interface PayerInterface
      * @param mixed $payment can be an int or a Payment entity
      * @param int $reason
      *
-     * @return void
+     * @return int
      */
     public function reject($payment, $reason);
-
-    /**
-     * Update the amount of a payment
-     *
-     * @param mixed $payment can be an int or a Payment entity
-     * @param float $amount
-     *
-     * @return void
-     */
-    public function updateAmount($payment, $amount);
-
-    /**
-     * Notify people according to the status of the payment
-     *
-     * @param mixed $payment can be an int or a Payment entity
-     *
-     * @return void
-     */
-    public function notify($payment);
 
     /**
      * Capture one payment. If provided, capture only the $amount

@@ -4,9 +4,11 @@ namespace Fei\Service\Payment\Client;
 use Fei\ApiClient\AbstractApiClient;
 use Fei\ApiClient\RequestDescriptor;
 use Fei\ApiClient\ResponseDescriptor;
+use Fei\Service\Payment\Client\Exception\ValidationException;
 use Fei\Service\Payment\Client\Utils\SearchBuilder;
 use Fei\Service\Payment\Entity\Payment;
 use Fei\Service\Payment\Client\Exception\PaymentException;
+use Fei\Service\Payment\Validator\PaymentValidator;
 use Guzzle\Http\Exception\BadResponseException;
 
 /**
@@ -27,7 +29,19 @@ class Payer extends AbstractApiClient implements PayerInterface
      */
     public function request(Payment $payment)
     {
-        // TODO: Implement request() method.
+        $this->ensureTransportIsSet();
+
+        $request = (new RequestDescriptor())
+            ->setMethod('POST')
+            ->setUrl($this->buildUrl(self::API_PAYMENT_PATH_INFO));
+        
+        $request->setBodyParams(['payment' => \json_encode($payment->toArray())]);
+
+        $response = $this->send($request);
+
+        $paymentId = \json_decode($response->getBody(), true);
+
+        return $paymentId;
     }
 
     /**
@@ -39,7 +53,16 @@ class Payer extends AbstractApiClient implements PayerInterface
      */
     public function retrieve($paymentId)
     {
-        // TODO: Implement retrieve() method.
+        $this->ensureTransportIsSet();
+
+        $request = (new RequestDescriptor())
+            ->setMethod('GET')
+            ->setUrl($this->buildUrl(self::API_PAYMENT_PATH_INFO . '?id=' . urlencode($paymentId)));
+
+        /** @var Payment $payment */
+        $payment = $this->fetch($request);
+
+        return $payment;
     }
 
     /**
@@ -51,7 +74,21 @@ class Payer extends AbstractApiClient implements PayerInterface
      */
     public function search(SearchBuilder $search)
     {
-        // TODO: Implement search() method.
+        $this->ensureTransportIsSet();
+
+        $request = (new RequestDescriptor())
+            ->setMethod('GET')
+            ->setUrl($this->buildUrl(self::API_PAYMENT_PATH_INFO . '?criteria=' . urlencode('{}')));
+
+        $response = $this->send($request);
+        $payments = \json_decode($response->getBody(), true);
+        $payments = (isset($payments['payments'])) ? $payments['payments'] : [];
+
+        foreach ($payments as &$payment) {
+            $payment = new Payment($payment);
+        }
+
+        return $payments;
     }
 
     /**
@@ -60,11 +97,11 @@ class Payer extends AbstractApiClient implements PayerInterface
      * @param mixed $payment can be an int or a Payment entity
      * @param int $reason
      *
-     * @return void
+     * @return int
      */
     public function cancel($payment, $reason)
     {
-        // TODO: Implement cancel() method.
+        return $this->updateStatusWithReason($payment, Payment::STATUS_CANCELLED, $reason);
     }
 
     /**
@@ -73,36 +110,56 @@ class Payer extends AbstractApiClient implements PayerInterface
      * @param mixed $payment can be an int or a Payment entity
      * @param int $reason
      *
-     * @return void
+     * @return int
      */
     public function reject($payment, $reason)
     {
-        // TODO: Implement reject() method.
+        return $this->updateStatusWithReason($payment, Payment::STATUS_REJECTED, $reason);
     }
 
     /**
-     * Update the amount of a payment
+     * Update one payment with a status that needs a reason
      *
      * @param mixed $payment can be an int or a Payment entity
-     * @param float $amount
+     * @param int $status
+     * @param int $reason
      *
-     * @return void
+     * @return int
      */
-    public function updateAmount($payment, $amount)
+    protected function updateStatusWithReason($payment, $status, $reason)
     {
-        // TODO: Implement updateAmount() method.
-    }
+        if (is_int($payment)) {
+            return $this->updateStatusWithReason(
+                $this->retrieve($payment),
+                $status,
+                $reason
+            );
+        }
 
-    /**
-     * Notify people according to the status of the payment
-     *
-     * @param mixed $payment can be an int or a Payment entity
-     *
-     * @return void
-     */
-    public function notify($payment)
-    {
-        // TODO: Implement notify() method.
+        // bad request, we need an integer
+        if (!$payment instanceof Payment) {
+            throw new PaymentException(
+                '`payment` parameter has to be either an integer or an instance of `Payment`!',
+                400
+            );
+        }
+
+        $this->ensureTransportIsSet();
+
+        $request = (new RequestDescriptor())
+            ->setMethod('PUT')
+            ->setUrl($this->buildUrl(self::API_PAYMENT_PATH_INFO));
+
+        $payment->setStatus($status);
+        $payment->setCancellationReason($reason);
+
+        $request->setBodyParams(['payment' => \json_encode($payment->toArray())]);
+
+        $response = $this->send($request);
+
+        $paymentId = \json_decode($response->getBody(), true);
+
+        return $paymentId;
     }
 
     /**
@@ -111,13 +168,31 @@ class Payer extends AbstractApiClient implements PayerInterface
      * @param mixed $payment can be an int or a Payment entity
      * @param float $amount
      *
-     * @return void
+     * @return int
      */
     public function capture($payment, $amount)
     {
-        // TODO: Implement capture() method.
+        $this->ensureTransportIsSet();
+
+        $request = (new RequestDescriptor())
+            ->setMethod('PATCH')
+            ->setUrl($this->buildUrl(self::API_PAYMENT_PATH_INFO));
+
+        $request->setBodyParams([
+            'payment' => (is_int($payment)) ? $payment : \json_encode($payment->toArray()),
+            'amount' => $amount
+        ]);
+
+        $response = $this->send($request);
+
+        $paymentId = \json_decode($response->getBody(), true);
+
+        return $paymentId;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function send(RequestDescriptor $request, $flags = 0)
     {
         try {
@@ -153,5 +228,39 @@ class Payer extends AbstractApiClient implements PayerInterface
     protected function callSendInParent(RequestDescriptor $request, $flags = 0)
     {
         return parent::send($request, $flags);
+    }
+
+    /**
+     * Check if a transport has been set. Otherwise, throw an exception
+     *
+     * @throws PaymentException
+     */
+    protected function ensureTransportIsSet()
+    {
+        if (!$this->getTransport()) {
+            throw new PaymentException('No transport has been set!');
+        }
+    }
+
+    /**
+     * Validate one payment entity
+     *
+     * @param Payment $payment
+     *
+     * @throws ValidationException
+     * @return bool
+     */
+    protected function validatePayment(Payment $payment)
+    {
+        $validator = new PaymentValidator();
+
+        if (!$validator->validate($payment)) {
+            throw (new ValidationException(
+                sprintf('Payment entity is not valid: (%s)', $validator->getErrorsAsString()),
+                400
+            ))->setErrors($validator->getErrors());
+        }
+
+        return true;
     }
 }
