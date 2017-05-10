@@ -4,11 +4,9 @@ namespace Fei\Service\Payment\Client;
 use Fei\ApiClient\AbstractApiClient;
 use Fei\ApiClient\RequestDescriptor;
 use Fei\ApiClient\ResponseDescriptor;
-use Fei\Service\Payment\Client\Exception\ValidationException;
-use Fei\Service\Payment\Client\Utils\SearchBuilder;
+use Fei\Service\Payment\Client\Utils\Builder\SearchBuilder;
 use Fei\Service\Payment\Entity\Payment;
 use Fei\Service\Payment\Client\Exception\PaymentException;
-use Fei\Service\Payment\Validator\PaymentValidator;
 use Guzzle\Http\Exception\BadResponseException;
 
 /**
@@ -47,17 +45,18 @@ class Payer extends AbstractApiClient implements PayerInterface
     /**
      * Retrieve one payment entity according to an unique payment id
      *
-     * @param int $paymentId
+     * @param string|int $paymentId the id or uuid of the payment
      *
      * @return Payment
      */
     public function retrieve($paymentId)
     {
         $this->ensureTransportIsSet();
+        $name = (is_string($paymentId) && strlen($paymentId) === 36) ? 'uuid' : 'id';
 
         $request = (new RequestDescriptor())
             ->setMethod('GET')
-            ->setUrl($this->buildUrl(self::API_PAYMENT_PATH_INFO . '?id=' . urlencode($paymentId)));
+            ->setUrl($this->buildUrl(self::API_PAYMENT_PATH_INFO . '?' . $name . '=' . urlencode($paymentId)));
 
         /** @var Payment $payment */
         $payment = $this->fetch($request);
@@ -78,8 +77,10 @@ class Payer extends AbstractApiClient implements PayerInterface
 
         $request = (new RequestDescriptor())
             ->setMethod('GET')
-            ->setUrl($this->buildUrl(self::API_PAYMENT_PATH_INFO . '?criteria=' . urlencode('{}')));
-
+            ->setUrl($this->buildUrl(
+                self::API_PAYMENT_PATH_INFO . '?criteria=' . urlencode(json_encode($search->getParams()))
+            ));
+        
         $response = $this->send($request);
         $payments = \json_decode($response->getBody(), true);
         $payments = (isset($payments['payments'])) ? $payments['payments'] : [];
@@ -240,27 +241,5 @@ class Payer extends AbstractApiClient implements PayerInterface
         if (!$this->getTransport()) {
             throw new PaymentException('No transport has been set!');
         }
-    }
-
-    /**
-     * Validate one payment entity
-     *
-     * @param Payment $payment
-     *
-     * @throws ValidationException
-     * @return bool
-     */
-    protected function validatePayment(Payment $payment)
-    {
-        $validator = new PaymentValidator();
-
-        if (!$validator->validate($payment)) {
-            throw (new ValidationException(
-                sprintf('Payment entity is not valid: (%s)', $validator->getErrorsAsString()),
-                400
-            ))->setErrors($validator->getErrors());
-        }
-
-        return true;
     }
 }

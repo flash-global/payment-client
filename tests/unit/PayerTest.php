@@ -8,7 +8,7 @@ use Fei\ApiClient\ResponseDescriptor;
 use Fei\ApiClient\Transport\SyncTransportInterface;
 use Fei\Service\Payment\Client\Exception\PaymentException;
 use Fei\Service\Payment\Client\Payer;
-use Fei\Service\Payment\Client\Utils\SearchBuilder;
+use Fei\Service\Payment\Client\Utils\Builder\SearchBuilder;
 use Fei\Service\Payment\Entity\Payment;
 use Guzzle\Http\Exception\BadResponseException;
 
@@ -148,14 +148,6 @@ class PayerTest extends Unit
     {
     }
 
-    public function testNotify()
-    {
-    }
-
-    public function testCapture()
-    {
-    }
-
     public function testSendWhenExceptionOfTypeBadResponseIsThrown()
     {
         $responseMock = $this->getMockBuilder(ResponseDescriptor::class)->setMethods(['getBody'])->getMock();
@@ -215,6 +207,34 @@ class PayerTest extends Unit
         $this->assertNull($results);
     }
 
+    public function testCapture()
+    {
+        $payment = new Payment([
+            'id' => 1,
+            'status' => Payment::STATUS_ERRORED,
+            'requiredPrice' => 15
+        ]);
+        $payment->setCreatedAt($payment->getCreatedAt()->format('c'));
+
+        $payer = new Payer();
+
+        $request1 = new RequestDescriptor();
+
+        $transport = $this->createMock(SyncTransportInterface::class);
+        $transport->expects($this->once())->method('send')->withConsecutive(
+            [$this->callback(function (RequestDescriptor $requestDescriptor) use (&$request1) {
+                return $request1 = $requestDescriptor;
+            })]
+        )->willReturnOnConsecutiveCalls(
+            (new ResponseDescriptor())->setBody(json_encode(1))
+        );
+        $payer->setTransport($transport);
+
+        $results = $payer->capture($payment, 8);
+
+        $this->assertEquals(1, $results);
+    }
+
     protected function getPaymentEntity()
     {
         $payment = new Payment();
@@ -229,5 +249,13 @@ class PayerTest extends Unit
             ->setUuid('fake-uuid');
 
         return $payment;
+    }
+
+    protected function callMethod($obj, $name, array $args)
+    {
+        $class = new \ReflectionClass($obj);
+        $method = $class->getMethod($name);
+        $method->setAccessible(true);
+        return $method->invokeArgs($obj, $args);
     }
 }

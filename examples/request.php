@@ -13,7 +13,7 @@ try {
     $payment->setExpirationDate(new \DateTime())
         ->setStatus(Payment::STATUS_PENDING)
         ->setRequiredPrice(456)
-        ->setAuthorizedPayment(Payment::PAYMENT_CB)
+        ->setAuthorizedPayment(Payment::PAYMENT_PAYPAL)
         ->setCallbackUrl([
             "succeeded" => 'http://127.0.0.1',
             "failed" => 'http://127.0.0.1',

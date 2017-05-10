@@ -1,7 +1,7 @@
 <?php
 namespace Fei\Service\Payment\Client;
 
-use Fei\Service\Payment\Client\Utils\SearchBuilder;
+use Fei\Service\Payment\Client\Utils\Builder\SearchBuilder;
 use Fei\Service\Payment\Entity\Payment;
 
 /**
