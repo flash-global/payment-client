@@ -66,4 +66,13 @@ interface PayerInterface
      * @return void
      */
     public function capture($payment, $amount);
+
+    /**
+     * Get the public link to process one payment
+     *
+     * @param mixed $payment can be an int (the id of the entity) ; a string (the uuid) or a Payment entity
+     *
+     * @return string
+     */
+    public function getPaymentLink($payment);
 }

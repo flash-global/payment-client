@@ -235,6 +235,34 @@ class PayerTest extends Unit
         $this->assertEquals(1, $results);
     }
 
+    public function testGetPaymentLink()
+    {
+        $payment = new Payment([
+            'id' => 1,
+            'status' => Payment::STATUS_ERRORED,
+            'requiredPrice' => 15
+        ]);
+        $payment->setCreatedAt($payment->getCreatedAt()->format('c'));
+
+        $payer = new Payer();
+
+        $request1 = new RequestDescriptor();
+
+        $transport = $this->createMock(SyncTransportInterface::class);
+        $transport->expects($this->once())->method('send')->withConsecutive(
+            [$this->callback(function (RequestDescriptor $requestDescriptor) use (&$request1) {
+                return $request1 = $requestDescriptor;
+            })]
+        )->willReturnOnConsecutiveCalls(
+            (new ResponseDescriptor())->setBody(json_encode('http://fake-url'))
+        );
+        $payer->setTransport($transport);
+
+        $results = $payer->getPaymentLink($payment, 8);
+
+        $this->assertEquals('http://fake-url', $results);
+    }
+
     protected function getPaymentEntity()
     {
         $payment = new Payment();

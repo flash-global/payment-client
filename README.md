@@ -54,7 +54,7 @@ You can control the api-client-worker.php process by using Supervisor.
 
 ## Payment entity
 
-In addition to traditional `id` and `createdAt` fields, Payment entity has elevent important properties:
+In addition to traditional `id` and `createdAt` fields, Payment entity has eleven important properties:
 
 | Properties    			| Type              |
 |---------------------|-------------------|
@@ -88,8 +88,6 @@ In addition to traditional `id` and `createdAt` fields, Payment entity has eleve
 ## Context entity
 
 In addition to traditional `id` field, Context entity has three important properties:
-
-In addition to traditional `id` and `createdAt` fields, Payment entity has elevent important properties:
 
 | Properties  | Type        |
 |-------------|-------------|
@@ -137,6 +135,7 @@ There are several methods in `Payer` class, all listed in the following table:
 | cancel         | `Payment|int $payment, int $reason`    | `intger` |
 | reject         | `Payment|int $payment, int $reason`    | `intger` |
 | capture        | `Payment|int $payment, float $reason`  | `intger` |
+| getPaymentLink | `Payment|int|string $payment`  				| `string` |
 
 ## Client option
 
@@ -271,3 +270,28 @@ $payer->setTransport(new BasicTransport());
 $paymentId = $payer->capture(1, 10.36);
 ```
 
+## GetPaymentLink
+
+You can get the public payment link to process a payment by using the `getPaymentLink()` method of the `Payer` client that takes either a `Payment` instance or an id or an uuid.
+
+**Example**
+
+```php
+<?php
+use Fei\ApiClient\Transport\BasicTransport;
+use Fei\Service\Payment\Client\Payer;
+
+$payer = new Payer([Payer::OPTION_BASEURL => 'http://payment.dev']);
+$payer->setTransport(new BasicTransport());
+
+try {
+    echo $payer->getPaymentLink(23);
+} catch (\Exception $e) {
+    echo $e->getMessage() . PHP_EOL;
+    $previous = $e->getPrevious();
+    if ($previous instanceof Guzzle\Http\Exception\ServerErrorResponseException) {
+        var_dump($previous->getRequest());
+        var_dump($previous->getResponse()->getBody(true));
+    }
+}
+```

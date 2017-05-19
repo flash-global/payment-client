@@ -194,6 +194,29 @@ class Payer extends AbstractApiClient implements PayerInterface
     /**
      * @inheritdoc
      */
+    public function getPaymentLink($payment)
+    {
+        $this->ensureTransportIsSet();
+
+        if ($payment instanceof Payment) {
+            $payment = $payment->getUuid();
+        }
+
+        $request = (new RequestDescriptor())
+            ->setMethod('GET')
+            ->setUrl($this->buildUrl(self::API_PAYMENT_PATH_INFO . '/link?id=' . urlencode($payment)));
+
+        /** @var Payment $payment */
+        $link = $this->send($request);
+        $link = \json_decode($link->getBody(), true);
+
+
+        return $link;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function send(RequestDescriptor $request, $flags = 0)
     {
         try {
