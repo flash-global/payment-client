@@ -1,14 +1,29 @@
 <?php
 use Fei\ApiClient\Transport\BasicTransport;
 use Fei\Service\Payment\Client\Payer;
+use Fei\Service\Payment\Entity\Payment;
 
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 
-$payer = new Payer([Payer::OPTION_BASEURL => 'http://127.0.0.1:8030']);
+$payer = new Payer([Payer::OPTION_BASEURL => 'http://payment.dev:8005']);
 $payer->setTransport(new BasicTransport());
 
 try {
-    $payment = $payer->retrieve('81db1f4e-e938-440a-aae0-95b5994db012');
+    $payment = new Payment();
+    $payment->setExpirationDate(new \DateTime())
+        ->setStatus(Payment::STATUS_PENDING)
+        ->setRequiredPrice(456)
+        ->setAuthorizedPayment(Payment::PAYMENT_PAYPAL|Payment::PAYMENT_STRIPE|Payment::PAYMENT_OGONE)
+        ->setCallbackUrl([
+            "succeeded" => 'http://127.0.0.1/succeeded',
+            "failed" => 'http://127.0.0.1/failed',
+            "saved" => 'http://127.0.0.1/saved',
+            "cancelled" => 'http://127.0.0.1/cancelled',
+        ]);
+
+    $payer->request($payment);
+
+    $payment = $payer->retrieve($payment->getUuid());
 
     var_dump($payment);
 } catch (\Exception $e) {
