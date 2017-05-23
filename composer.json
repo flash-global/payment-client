@@ -19,10 +19,6 @@
         {
             "type": "composer",
             "url": "https://composer.flash-global.net"
-        },
-        {
-            "type": "git",
-            "url": "git@github.com:opcoding/payment-common.git"
         }
     ],
     "require": {

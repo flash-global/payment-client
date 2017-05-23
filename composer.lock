@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "0222721358cc4366f560e9414964f61c",
+    "content-hash": "8766f9201115b3855bc437231eef050e",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -486,8 +486,14 @@
             "version": "v1.0.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:opcoding/payment-common.git",
+                "url": "git@github.com:flash-global/payment-common.git",
                 "reference": "5b9cfe7df1d4db6bb881e89381507734286e8dc2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://composer.flash-global.net/dist/fei-payment-common-5b9cfe7df1d4db6bb881e89381507734286e8dc2-zip-e38cab.zip",
+                "reference": "5b9cfe7df1d4db6bb881e89381507734286e8dc2",
+                "shasum": "1e7495bd8804515bdec6da98176763b95fac8131"
             },
             "require": {
                 "doctrine/common": "^2.7",
@@ -525,6 +531,10 @@
             "keywords": [
                 "payment"
             ],
+            "support": {
+                "source": "https://github.com/flash-global/payment-common/tree/v1.0.1",
+                "issues": "https://github.com/flash-global/payment-common/issues"
+            },
             "time": "2017-05-23T13:49:38+00:00"
         },
         {
