@@ -17,7 +17,6 @@ try {
         ->setCallbackUrl([
             "succeeded" => 'http://127.0.0.1',
             "failed" => 'http://127.0.0.1',
-            "saved" => 'http://127.0.0.1',
             "cancelled" => 'http://127.0.0.1',
         ]);
 

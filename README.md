@@ -83,7 +83,10 @@ In addition to traditional `id` and `createdAt` fields, Payment entity has eleve
 * `authorizedPayment` is an int that represent the list of the payment authorised (used like binary flags)
 * `selectedPayment` is an integer representing the payment method that has been chosen
 * `contexts` is an ArrayCollection of all the contexts for the entity
-* `callbackUrl` is an array of callbacks url that will be used is some events in the application (when the payment is saved for example)
+* `callbackUrl` is an array of callbacks url that will be used is some events in the application (when the payment is saved for example). Here are the possible value and purpose of the callback url:
+	* `succeeded` : the url that will be called when an payment authorization successes
+	* `failed` : the url that will be called when an payment authorization failed
+	* `cancelled` : the url that will be called when an payment is cancelled 
 
 ## Context entity
 
