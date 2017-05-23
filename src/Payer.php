@@ -32,12 +32,14 @@ class Payer extends AbstractApiClient implements PayerInterface
         $request = (new RequestDescriptor())
             ->setMethod('POST')
             ->setUrl($this->buildUrl(self::API_PAYMENT_PATH_INFO));
-        
+
         $request->setBodyParams(['payment' => \json_encode($payment->toArray())]);
 
         $response = $this->send($request);
 
         $paymentId = \json_decode($response->getBody(), true);
+
+        $payment->setId($paymentId);
 
         return $paymentId;
     }
@@ -69,7 +71,7 @@ class Payer extends AbstractApiClient implements PayerInterface
      *
      * @param SearchBuilder $search
      *
-     * @return array
+     * @return Payment[]
      */
     public function search(SearchBuilder $search)
     {
@@ -80,7 +82,7 @@ class Payer extends AbstractApiClient implements PayerInterface
             ->setUrl($this->buildUrl(
                 self::API_PAYMENT_PATH_INFO . '?criteria=' . urlencode(json_encode($search->getParams()))
             ));
-        
+
         $response = $this->send($request);
         $payments = \json_decode($response->getBody(), true);
         $payments = (isset($payments['payments'])) ? $payments['payments'] : [];
@@ -95,8 +97,8 @@ class Payer extends AbstractApiClient implements PayerInterface
     /**
      * Cancel one payment request by the client
      *
-     * @param mixed $payment can be an int or a Payment entity
-     * @param int $reason
+     * @param int|Payment $payment can be an int or a Payment entity
+     * @param string      $reason
      *
      * @return int
      */
@@ -108,8 +110,8 @@ class Payer extends AbstractApiClient implements PayerInterface
     /**
      * Reject one payment request by the provider
      *
-     * @param mixed $payment can be an int or a Payment entity
-     * @param int $reason
+     * @param int|Payment $payment can be an int or a Payment entity
+     * @param string      $reason
      *
      * @return int
      */
@@ -121,9 +123,9 @@ class Payer extends AbstractApiClient implements PayerInterface
     /**
      * Update one payment with a status that needs a reason
      *
-     * @param mixed $payment can be an int or a Payment entity
-     * @param int $status
-     * @param int $reason
+     * @param int|Payment $payment can be an int or a Payment entity
+     * @param int         $status
+     * @param string      $reason
      *
      * @return int
      */
@@ -166,7 +168,7 @@ class Payer extends AbstractApiClient implements PayerInterface
     /**
      * Capture one payment. If provided, capture only the $amount
      *
-     * @param mixed $payment can be an int or a Payment entity
+     * @param int|Payment $payment can be an int or a Payment entity
      * @param float $amount
      *
      * @return int
@@ -185,6 +187,10 @@ class Payer extends AbstractApiClient implements PayerInterface
         ]);
 
         $response = $this->send($request);
+
+        if ($payment instanceof Payment) {
+            $payment->setCapturedPrice($amount);
+        }
 
         $paymentId = \json_decode($response->getBody(), true);
 

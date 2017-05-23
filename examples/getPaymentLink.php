@@ -5,7 +5,7 @@ use Fei\Service\Payment\Entity\Payment;
 
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 
-$payer = new Payer([Payer::OPTION_BASEURL => 'http://127.0.0.1:8030']);
+$payer = new Payer([Payer::OPTION_BASEURL => 'http://translate.dev:8005']);
 $payer->setTransport(new BasicTransport());
 
 try {
@@ -22,7 +22,7 @@ try {
         ]);
 
     $payment = $payer->request($payment);
-    echo $payer->getPaymentLink($payment);
+    echo $payer->getPaymentLink($payment) . PHP_EOL;
 } catch (\Exception $e) {
     echo $e->getMessage() . PHP_EOL;
     $previous = $e->getPrevious();

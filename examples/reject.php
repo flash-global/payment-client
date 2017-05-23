@@ -5,12 +5,25 @@ use Fei\Service\Payment\Entity\Payment;
 
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 
-$payer = new Payer([Payer::OPTION_BASEURL => 'http://127.0.0.1:8030']);
+$payer = new Payer([Payer::OPTION_BASEURL => 'http://translate.dev:8005']);
 $payer->setTransport(new BasicTransport());
 
 try {
-    $paymentId = $payer->reject(1, 'Rejected by an administrator');
-    echo $paymentId;
+    $payment = new Payment();
+    $payment->setExpirationDate(new \DateTime())
+        ->setStatus(Payment::STATUS_PENDING)
+        ->setRequiredPrice(456)
+        ->setAuthorizedPayment(Payment::PAYMENT_PAYPAL|Payment::PAYMENT_OGONE)
+        ->setCallbackUrl([
+            "succeeded" => 'http://127.0.0.1/succeeded',
+            "failed" => 'http://127.0.0.1/failed',
+            "saved" => 'http://127.0.0.1/saved',
+            "cancelled" => 'http://127.0.0.1/cancelled',
+        ]);
+
+    $payer->request($payment);
+    $payer->reject($payment, 'Rejected by an administrator');
+    var_dump($payment);
 } catch (\Exception $e) {
     echo $e->getMessage() . PHP_EOL;
     $previous = $e->getPrevious();
