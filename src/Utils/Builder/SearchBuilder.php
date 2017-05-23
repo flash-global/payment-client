@@ -1,6 +1,7 @@
 <?php
 namespace Fei\Service\Payment\Client\Utils\Builder;
 
+use Fei\Service\Payment\Client\Exception\PaymentException;
 use Fei\Service\Payment\Client\Utils\Builder\Fields\Context;
 use Fei\Service\Payment\Client\Utils\Builder\Fields\Uuid;
 
