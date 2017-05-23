@@ -483,11 +483,11 @@
         },
         {
             "name": "fei/payment-common",
-            "version": "v1.0.0",
+            "version": "v1.0.1",
             "source": {
                 "type": "git",
                 "url": "git@github.com:opcoding/payment-common.git",
-                "reference": "a11da6bb0be0e6123d81e1899be110e1e3f3bfe3"
+                "reference": "5b9cfe7df1d4db6bb881e89381507734286e8dc2"
             },
             "require": {
                 "doctrine/common": "^2.7",
@@ -525,7 +525,7 @@
             "keywords": [
                 "payment"
             ],
-            "time": "2017-05-23T08:35:43+00:00"
+            "time": "2017-05-23T13:49:38+00:00"
         },
         {
             "name": "guzzle/guzzle",
