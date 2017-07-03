@@ -13,11 +13,13 @@ try {
     $payment->setExpirationDate(new \DateTime())
         ->setStatus(Payment::STATUS_AUTHORIZED)
         ->setRequiredPrice(123)
+        ->setVat(0.5)
         ->setAuthorizedPayment(Payment::PAYMENT_OGONE)
         ->setCallbackUrl([
             "succeeded" => 'http://127.0.0.1',
             "failed" => 'http://127.0.0.1',
             "cancelled" => 'http://127.0.0.1',
+            "saved" => 'http://127.0.0.1',
         ]);
 
     $payment = $payer->request($payment);

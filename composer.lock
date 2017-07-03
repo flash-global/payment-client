@@ -483,17 +483,17 @@
         },
         {
             "name": "fei/payment-common",
-            "version": "v1.0.1",
+            "version": "V1.0.3",
             "source": {
                 "type": "git",
                 "url": "git@github.com:flash-global/payment-common.git",
-                "reference": "5b9cfe7df1d4db6bb881e89381507734286e8dc2"
+                "reference": "c0c49cb3645146162fd75e6881fe075f1cd0b346"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://composer.flash-global.net/dist/fei-payment-common-5b9cfe7df1d4db6bb881e89381507734286e8dc2-zip-e38cab.zip",
-                "reference": "5b9cfe7df1d4db6bb881e89381507734286e8dc2",
-                "shasum": "1e7495bd8804515bdec6da98176763b95fac8131"
+                "url": "https://composer.flash-global.net/dist/fei-payment-common-c0c49cb3645146162fd75e6881fe075f1cd0b346-zip-bf6757.zip",
+                "reference": "c0c49cb3645146162fd75e6881fe075f1cd0b346",
+                "shasum": "8f007b16f242e7ba1082cf92c7dce462c812651c"
             },
             "require": {
                 "doctrine/common": "^2.7",
@@ -532,10 +532,10 @@
                 "payment"
             ],
             "support": {
-                "source": "https://github.com/flash-global/payment-common/tree/v1.0.1",
+                "source": "https://github.com/flash-global/payment-common/tree/V1.0.3",
                 "issues": "https://github.com/flash-global/payment-common/issues"
             },
-            "time": "2017-05-23T13:49:38+00:00"
+            "time": "2017-07-03T12:26:44+00:00"
         },
         {
             "name": "guzzle/guzzle",
