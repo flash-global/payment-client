@@ -263,6 +263,37 @@ class PayerTest extends Unit
         $this->assertEquals('http://fake-url', $results);
     }
 
+    public function testSendPaymentLinkByMail()
+    {
+        $from = 'from';
+        $to = 'to';
+
+        $payment = new Payment([
+            'id' => 1,
+            'status' => Payment::STATUS_ERRORED,
+            'requiredPrice' => 15
+        ]);
+
+        $payer = Stub::make(Payer::class, [
+            'send' => true,
+            'getTransport' => true,
+        ]);
+
+        $request = (new RequestDescriptor())
+            ->setMethod('POST')
+            ->setUrl($payer->buildUrl(Payer::API_PAYMENT_PATH_INFO . '/mail-link'));
+
+        $request->setBodyParams([
+            'payment' => 1,
+            'from' => $from,
+            'to' => $to,
+        ]);
+
+        $payer->expects($this->once())->method('send')->with($request);
+
+        $payer->sendPaymentLinkByMail($payment, $from, $to);
+    }
+
     protected function getPaymentEntity()
     {
         $payment = new Payment();

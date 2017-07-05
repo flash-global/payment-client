@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "8766f9201115b3855bc437231eef050e",
+    "content-hash": "df353e90bcc1be87ee4b80be19ac1c9d",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -483,17 +483,17 @@
         },
         {
             "name": "fei/payment-common",
-            "version": "v1.0.1",
+            "version": "V1.0.4",
             "source": {
                 "type": "git",
                 "url": "git@github.com:flash-global/payment-common.git",
-                "reference": "5b9cfe7df1d4db6bb881e89381507734286e8dc2"
+                "reference": "4d5b9989eaeaf2545349e60e6c91f392f96443ef"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://composer.flash-global.net/dist/fei-payment-common-5b9cfe7df1d4db6bb881e89381507734286e8dc2-zip-e38cab.zip",
-                "reference": "5b9cfe7df1d4db6bb881e89381507734286e8dc2",
-                "shasum": "1e7495bd8804515bdec6da98176763b95fac8131"
+                "url": "https://composer.flash-global.net/dist/fei-payment-common-4d5b9989eaeaf2545349e60e6c91f392f96443ef-zip-c4f117.zip",
+                "reference": "4d5b9989eaeaf2545349e60e6c91f392f96443ef",
+                "shasum": "d9d240dd4efa6c6dc155cf1c0e5b125403359805"
             },
             "require": {
                 "doctrine/common": "^2.7",
@@ -532,10 +532,10 @@
                 "payment"
             ],
             "support": {
-                "source": "https://github.com/flash-global/payment-common/tree/v1.0.1",
+                "source": "https://github.com/flash-global/payment-common/tree/master",
                 "issues": "https://github.com/flash-global/payment-common/issues"
             },
-            "time": "2017-05-23T13:49:38+00:00"
+            "time": "2017-07-03T12:28:02+00:00"
         },
         {
             "name": "guzzle/guzzle",

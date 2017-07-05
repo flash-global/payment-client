@@ -13,11 +13,13 @@ try {
     $payment->setExpirationDate(new \DateTime())
         ->setStatus(Payment::STATUS_PENDING)
         ->setRequiredPrice(456)
+        ->setVat(0.5)
         ->setAuthorizedPayment(Payment::PAYMENT_PAYPAL|Payment::PAYMENT_PAYZEN|Payment::PAYMENT_STRIPE|Payment::PAYMENT_OGONE)
         ->setCallbackUrl([
             "succeeded" => 'http://127.0.0.1/succeeded',
             "failed" => 'http://127.0.0.1/failed',
             "cancelled" => 'http://127.0.0.1/cancelled',
+            "saved" => 'http://127.0.0.1/saved',
         ]);
 
     $payer->request($payment);
