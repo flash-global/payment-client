@@ -221,6 +221,29 @@ class Payer extends AbstractApiClient implements PayerInterface
     }
 
     /**
+     * @param Payment $payment
+     * @param string $from
+     * @param string $to
+     * @return mixed
+     */
+    public function sendPaymentLinkByMail(Payment $payment, string $from, string $to)
+    {
+        $this->ensureTransportIsSet();
+
+        $request = (new RequestDescriptor())
+            ->setMethod('POST')
+            ->setUrl($this->buildUrl(self::API_PAYMENT_PATH_INFO . '/mail-link'));
+
+        $request->setBodyParams([
+            'payment' => $payment->getId(),
+            'from' => $from,
+            'to' => $to
+        ]);
+
+        return $this->send($request);
+    }
+
+    /**
      * @inheritdoc
      */
     public function send(RequestDescriptor $request, $flags = 0)
