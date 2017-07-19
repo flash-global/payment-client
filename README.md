@@ -133,6 +133,7 @@ There are several methods in `Payer` class, all listed in the following table:
 | Method         | Parameters                             | Return   |
 |----------------|----------------------------------------|----------|
 | request        | `Payment $payment`                     | `integer`|
+| update         | `Payment $payment`                     | `integer`|
 | retrieve       | `int $paymentId`            						| `Payment`|
 | search         | `SearchBuilder $search`                | `array`  |
 | cancel         | `Payment|int $payment, int $reason`    | `intger` |
@@ -180,7 +181,41 @@ $payment->setExpirationDate(new \DateTime())
 $payment = $payer->request($payment);
 ```
 
-## Request
+## Update
+
+You can update an existing Payment by using the `update()` method of the `Payer` client:
+
+**Example**
+
+```php
+<?php
+use Fei\ApiClient\Transport\BasicTransport;
+use Fei\Service\Payment\Client\Payer;
+use Fei\Service\Payment\Entity\Payment;
+
+$payer = new Payer([Payer::OPTION_BASEURL => 'http://payment.dev']);
+$payer->setTransport(new BasicTransport());
+
+$payment = new Payment();
+$payment->setExpirationDate(new \DateTime())
+		->setStatus(Payment::STATUS_PENDING)
+		->setRequiredPrice(456)
+		->setAuthorizedPayment(Payment::PAYMENT_PAYPAL)
+		->setCallbackUrl([
+				"succeeded" => 'http://url-succeeded.fr',
+				"failed" => 'http://url-failed.fr',
+				"saved" => 'http://url-saved.fr',
+				"cancelled" => 'http://url-cancelled.fr',
+		]);
+
+$paymentId = $payer->request($payment);
+
+$payment->setRequiredPrice(327.4);
+$payer->update($payment);
+
+```
+
+## Retrieve
 
 You can retrieve one Payment by using the `retrieve()` method of the `Payer` client that takes one parameter: the `id` the the payment entity OR the `uuid` of the payment.
 

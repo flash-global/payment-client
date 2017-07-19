@@ -13,7 +13,7 @@ parameters:
                 - /^src\/(.*)/
                 - /^tests\/(unit|functional|acceptance)\/(.*)/
         phpcpd:
-            exclude: ['vendor']
+            exclude: ['vendor', 'examples']
         phpmd:
             exclude: ['tests/_support']
             ruleset: [ruleset.xml]

@@ -294,4 +294,28 @@ class Payer extends AbstractApiClient implements PayerInterface
             throw new PaymentException('No transport has been set!');
         }
     }
+
+    /**
+     * Update one payment entity
+     *
+     * @param Payment $payment
+     *
+     * @return int
+     */
+    public function update(Payment $payment)
+    {
+        $this->ensureTransportIsSet();
+
+        $request = (new RequestDescriptor())
+            ->setMethod('PUT')
+            ->setUrl($this->buildUrl(self::API_PAYMENT_PATH_INFO));
+
+        $request->setBodyParams(['payment' => \json_encode($payment->toArray())]);
+
+        $response = $this->send($request);
+
+        $paymentId = \json_decode($response->getBody(), true);
+
+        return $paymentId;
+    }
 }

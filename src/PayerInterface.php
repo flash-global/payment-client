@@ -20,6 +20,15 @@ interface PayerInterface
     public function request(Payment $payment);
 
     /**
+     * Update one payment entity
+     *
+     * @param Payment $payment
+     *
+     * @return int
+     */
+    public function update(Payment $payment);
+
+    /**
      * Retrieve one payment entity according to an unique payment id
      *
      * @param int $paymentId

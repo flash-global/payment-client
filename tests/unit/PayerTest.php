@@ -42,6 +42,29 @@ class PayerTest extends Unit
         $this->assertEquals(1, $results);
     }
 
+    public function testUpdate()
+    {
+        $payer = new Payer();
+
+        $payment = $this->getPaymentEntity();
+
+        $request1 = new RequestDescriptor();
+
+        $transport = $this->createMock(SyncTransportInterface::class);
+        $transport->expects($this->once())->method('send')->withConsecutive(
+            [$this->callback(function (RequestDescriptor $requestDescriptor) use (&$request1) {
+                return $request1 = $requestDescriptor;
+            })]
+        )->willReturnOnConsecutiveCalls(
+            (new ResponseDescriptor())->setBody(1)
+        );
+        $payer->setTransport($transport);
+
+        $results = $payer->update($payment);
+
+        $this->assertEquals(1, $results);
+    }
+
     public function testRetrieve()
     {
         $payment = new Payment([
