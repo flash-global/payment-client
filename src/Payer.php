@@ -226,7 +226,7 @@ class Payer extends AbstractApiClient implements PayerInterface
      * @param string $to
      * @return mixed
      */
-    public function sendPaymentLinkByMail(Payment $payment, string $from, string $to)
+    public function sendPaymentLinkByMail(Payment $payment, $from, $to)
     {
         $this->ensureTransportIsSet();
 
