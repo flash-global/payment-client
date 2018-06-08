@@ -1,13 +1,12 @@
 {
     "name": "fei/payment-client",
-    "description": "Flash applicative Payment - client component",
+    "description": "Payment - client component",
     "type": "project",
     "license": "proprietary",
     "authors": [
         {
-            "name": "Boris Cerati",
-            "email": "bce@opcoding.eu",
-            "role": "dev"
+            "name": "Yoctu",
+            "email": "contact@yoctu.com"
         }
     ],
     "autoload": {
@@ -18,13 +17,13 @@
     "repositories": [
         {
             "type": "composer",
-            "url": "https://composer.flash-global.net"
+            "url": "https://composer.flash.global"
         }
     ],
     "require": {
         "php": ">=5.5",
         "fei/api-client": "^1.1",
-        "fei/payment-common": "~1.0.0"
+        "fei/payment-common": "~2.0.0"
     },
     "require-dev": {
         "codeception/codeception": "^2.2",
