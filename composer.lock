@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "64d1bfcf47fbcdaa8d3c50d25f4b62d0",
-    "content-hash": "5c867df7469e38fb2695d6d0177e3030",
+    "hash": "19c855f23055c7dc2cc6c5f87a5600b2",
+    "content-hash": "d6c2cbca8bd3881ca103c05ce97b96d8",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -500,17 +500,17 @@
         },
         {
             "name": "fei/payment-common",
-            "version": "v2.0.0",
+            "version": "v2.4.0",
             "source": {
                 "type": "git",
                 "url": "git@github.com:flash-global/payment-common.git",
-                "reference": "f3ff5503ed3d86c53e8c5b5ab318960b5ef26299"
+                "reference": "8254b16e73f7c41168776ce7799e7507c88dbaf5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://composer.flash.global/dist/fei-payment-common-f3ff5503ed3d86c53e8c5b5ab318960b5ef26299-zip-39afd3.zip",
-                "reference": "f3ff5503ed3d86c53e8c5b5ab318960b5ef26299",
-                "shasum": "4bf0989fca14037a6368d1a3bdcc0d257f29ac0c"
+                "url": "https://composer.flash.global/dist/fei-payment-common-8254b16e73f7c41168776ce7799e7507c88dbaf5-zip-fe893e.zip",
+                "reference": "8254b16e73f7c41168776ce7799e7507c88dbaf5",
+                "shasum": "3c6c519a58b2c0e19f9e3afdfdfd9437482bdecc"
             },
             "require": {
                 "doctrine/common": "~2.6.0",
@@ -534,17 +534,12 @@
             },
             "authors": [
                 {
-                    "name": "Anaëlle Baumann",
-                    "email": "aba@opcoding.eu",
-                    "role": "dev"
-                },
-                {
-                    "name": "Boris Cerati",
-                    "email": "bce@opcoding.eu",
+                    "name": "Yoctu",
+                    "email": "contact@yoctu.com",
                     "role": "dev"
                 }
             ],
-            "description": "Flash applicative payment - common components",
+            "description": "Payment - common components",
             "keywords": [
                 "payment"
             ],
@@ -552,7 +547,7 @@
                 "source": "https://github.com/flash-global/payment-common/tree/master",
                 "issues": "https://github.com/flash-global/payment-common/issues"
             },
-            "time": "2018-03-19 16:43:38"
+            "time": "2018-06-12 16:51:34"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -737,16 +732,16 @@
         },
         {
             "name": "paragonie/random_compat",
-            "version": "v2.0.14",
+            "version": "v2.0.15",
             "source": {
                 "type": "git",
                 "url": "https://github.com/paragonie/random_compat.git",
-                "reference": "f6ce7dd93628088e1017fb5dd73b0b9fec7df9e5"
+                "reference": "10bcb46e8f3d365170f6de9d05245aa066b81f09"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/paragonie/random_compat/zipball/f6ce7dd93628088e1017fb5dd73b0b9fec7df9e5",
-                "reference": "f6ce7dd93628088e1017fb5dd73b0b9fec7df9e5",
+                "url": "https://api.github.com/repos/paragonie/random_compat/zipball/10bcb46e8f3d365170f6de9d05245aa066b81f09",
+                "reference": "10bcb46e8f3d365170f6de9d05245aa066b81f09",
                 "shasum": ""
             },
             "require": {
@@ -782,7 +777,7 @@
                 "pseudorandom",
                 "random"
             ],
-            "time": "2018-06-06 17:40:22"
+            "time": "2018-06-08 15:26:40"
         },
         {
             "name": "pda/pheanstalk",
