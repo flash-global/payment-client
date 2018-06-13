@@ -500,17 +500,17 @@
         },
         {
             "name": "fei/payment-common",
-            "version": "v2.4.0",
+            "version": "v2.4.4",
             "source": {
                 "type": "git",
                 "url": "git@github.com:flash-global/payment-common.git",
-                "reference": "8254b16e73f7c41168776ce7799e7507c88dbaf5"
+                "reference": "394be979dc4245b9bd1f7a7c4bc02c4b7fa83a02"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://composer.flash.global/dist/fei-payment-common-8254b16e73f7c41168776ce7799e7507c88dbaf5-zip-fe893e.zip",
-                "reference": "8254b16e73f7c41168776ce7799e7507c88dbaf5",
-                "shasum": "3c6c519a58b2c0e19f9e3afdfdfd9437482bdecc"
+                "url": "https://composer.flash.global/dist/fei-payment-common-394be979dc4245b9bd1f7a7c4bc02c4b7fa83a02-zip-59f81c.zip",
+                "reference": "394be979dc4245b9bd1f7a7c4bc02c4b7fa83a02",
+                "shasum": "8fe34ec71106a7b9567e502c33812cd177a16117"
             },
             "require": {
                 "doctrine/common": "~2.6.0",
@@ -547,7 +547,7 @@
                 "source": "https://github.com/flash-global/payment-common/tree/master",
                 "issues": "https://github.com/flash-global/payment-common/issues"
             },
-            "time": "2018-06-12 16:51:34"
+            "time": "2018-06-13 09:10:29"
         },
         {
             "name": "guzzlehttp/guzzle",

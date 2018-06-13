@@ -42,6 +42,29 @@ class PayerTest extends Unit
         $this->assertEquals(1, $results);
     }
 
+    public function testRequestAcceptApiKey()
+    {
+        $payer = new Payer();
+        $payment = $this->getPaymentEntity();
+
+        $request1 = new RequestDescriptor();
+
+        $transport = $this->createMock(SyncTransportInterface::class);
+        $transport->expects($this->once())->method('send')->withConsecutive(
+            [$this->callback(function (RequestDescriptor $requestDescriptor) use (&$request1) {
+                return $request1 = $requestDescriptor;
+            })]
+        )->willReturnOnConsecutiveCalls(
+            (new ResponseDescriptor())->setBody(1)
+        );
+        $payer->setTransport($transport);
+        $payer->setApiKey('toto');
+
+        $results = $payer->request($payment);
+
+        $this->assertEquals(1, $results);
+    }
+
     public function testUpdate()
     {
         $payer = new Payer();
@@ -169,32 +192,6 @@ class PayerTest extends Unit
 
     public function testUpdateAmount()
     {
-    }
-
-    public function testSendWhenExceptionOfTypeBadResponseIsThrown()
-    {
-        $responseMock = $this->getMockBuilder(ResponseDescriptor::class)->setMethods(['getBody'])->getMock();
-        $responseMock->expects($this->once())->method('getBody')->willReturn(json_encode([
-            'error' => 'Bad response exception',
-            'code' => 500
-        ]));
-
-        $previous = $this->getMockBuilder(BadResponseException::class)->setMethods(['getResponse'])->getMock();
-        $previous->expects($this->once())->method('getResponse')->willReturn($responseMock);
-
-        $payer = Stub::make(Payer::class, [
-            'callSendInParent' => Stub::once(function () use ($previous) {
-                throw new \Exception('Exception thrown', 0, $previous);
-            })
-        ]);
-
-        $request = new RequestDescriptor();
-
-        $this->expectException(PaymentException::class);
-        $this->expectExceptionMessage('Bad response exception');
-        $this->expectExceptionCode(500);
-
-        $payer->send($request);
     }
 
     public function testSendWhenExceptionIsThrown()

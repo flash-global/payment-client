@@ -18,6 +18,31 @@ class Payer extends AbstractApiClient implements PayerInterface
 {
     const API_PAYMENT_PATH_INFO = '/api/payments';
 
+    const OPTION_APIKEY = 'apiKey';
+
+    /** @var string */
+    protected $apiKey = '';
+
+    /**
+     * @return string
+     */
+    public function getApiKey()
+    {
+        return $this->apiKey;
+    }
+
+    /**
+     * @param $apiKey
+     *
+     * @return Logger
+     */
+    public function setApiKey($apiKey)
+    {
+        $this->apiKey = $apiKey;
+
+        return $this;
+    }
+
     /**
      * Send a payment request
      *
@@ -34,6 +59,9 @@ class Payer extends AbstractApiClient implements PayerInterface
             ->setUrl($this->buildUrl(self::API_PAYMENT_PATH_INFO));
 
         $request->setBodyParams(['payment' => \json_encode($payment->toArray())]);
+        if ($this->apiKey) {
+                $request->addHeader('Authorization', $this->getApiKey());
+        }
 
         $response = $this->send($request);
 
