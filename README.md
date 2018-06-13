@@ -71,12 +71,16 @@ In addition to traditional `id` and `createdAt` fields, Payment entity has eleve
 | selectedPayment 		| `integer`         |
 | contexts						| `ArrayCollection` |
 | callbackUrl					| `ArrayCollection` |
+| orderId		| `string`         	|
+| paymentMethod		| `string`         	|
 
 * `uuid` is a string representing a unique identifier of the payment entity
 * `createdAt' represent the creation date
 * `payedAt' represent the date when the payment has been made
 * `expirationDate' represent the date when the payment expires
 * `status` indicate in which status the payment currently is
+* `orderId` Store your OrderId from your application
+* `paymentMethod` Payment method to be used on the platform (example: VISA in payzen)
 * `cancellationReason` is a string representing the reason of the cancellation of the payment
 * `requiredPrice` is a float representing the price required
 * `capturedPrice` is a float representing the price captured
@@ -169,6 +173,8 @@ $payer->setTransport(new BasicTransport());
 $payment = new Payment();
 $payment->setExpirationDate(new \DateTime())
 		->setStatus(Payment::STATUS_PENDING)
+		->setOrderId('ORDERID')
+		->setPaymentMethod('VISA')
 		->setRequiredPrice(456)
 		->setAuthorizedPayment(Payment::PAYMENT_PAYPAL)
 		->setCallbackUrl([
