@@ -45,7 +45,6 @@ class PayerTest extends Unit
     public function testRequestAcceptApiKey()
     {
         $payer = new Payer();
-
         $payment = $this->getPaymentEntity();
 
         $request1 = new RequestDescriptor();
@@ -59,8 +58,7 @@ class PayerTest extends Unit
             (new ResponseDescriptor())->setBody(1)
         );
         $payer->setTransport($transport);
-
-	$payer->setKey('toto');
+        $payer->setApiKey('toto');
 
         $results = $payer->request($payment);
 
@@ -194,32 +192,6 @@ class PayerTest extends Unit
 
     public function testUpdateAmount()
     {
-    }
-
-    public function testSendWhenExceptionOfTypeBadResponseIsThrown()
-    {
-        $responseMock = $this->getMockBuilder(ResponseDescriptor::class)->setMethods(['getBody'])->getMock();
-        $responseMock->expects($this->once())->method('getBody')->willReturn(json_encode([
-            'error' => 'Bad response exception',
-            'code' => 500
-        ]));
-
-        $previous = $this->getMockBuilder(BadResponseException::class)->setMethods(['getResponse'])->getMock();
-        $previous->expects($this->once())->method('getResponse')->willReturn($responseMock);
-
-        $payer = Stub::make(Payer::class, [
-            'callSendInParent' => Stub::once(function () use ($previous) {
-                throw new \Exception('Exception thrown', 0, $previous);
-            })
-        ]);
-
-        $request = new RequestDescriptor();
-
-        $this->expectException(PaymentException::class);
-        $this->expectExceptionMessage('Bad response exception');
-        $this->expectExceptionCode(500);
-
-        $payer->send($request);
     }
 
     public function testSendWhenExceptionIsThrown()
