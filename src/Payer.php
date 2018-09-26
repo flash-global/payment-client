@@ -1,4 +1,5 @@
 <?php
+
 namespace Fei\Service\Payment\Client;
 
 use Fei\ApiClient\AbstractApiClient;
@@ -18,31 +19,6 @@ class Payer extends AbstractApiClient implements PayerInterface
 {
     const API_PAYMENT_PATH_INFO = '/api/payments';
 
-    const OPTION_APIKEY = 'apiKey';
-
-    /** @var string */
-    protected $apiKey = '';
-
-    /**
-     * @return string
-     */
-    public function getApiKey()
-    {
-        return $this->apiKey;
-    }
-
-    /**
-     * @param $apiKey
-     *
-     * @return Logger
-     */
-    public function setApiKey($apiKey)
-    {
-        $this->apiKey = $apiKey;
-
-        return $this;
-    }
-
     /**
      * Send a payment request
      *
@@ -59,8 +35,8 @@ class Payer extends AbstractApiClient implements PayerInterface
             ->setUrl($this->buildUrl(self::API_PAYMENT_PATH_INFO));
 
         $request->setBodyParams(['payment' => \json_encode($payment->toArray())]);
-        if ($this->apiKey) {
-                $request->addHeader('Authorization', $this->getApiKey());
+        if ($this->getAuthorization()) {
+            $request->addHeader('Authorization', $this->getAuthorization());
         }
 
         $response = $this->send($request);
@@ -126,7 +102,7 @@ class Payer extends AbstractApiClient implements PayerInterface
      * Cancel one payment request by the client
      *
      * @param int|Payment $payment can be an int or a Payment entity
-     * @param string      $reason
+     * @param string $reason
      *
      * @return int
      */
@@ -139,7 +115,7 @@ class Payer extends AbstractApiClient implements PayerInterface
      * Reject one payment request by the provider
      *
      * @param int|Payment $payment can be an int or a Payment entity
-     * @param string      $reason
+     * @param string $reason
      *
      * @return int
      */
@@ -152,8 +128,8 @@ class Payer extends AbstractApiClient implements PayerInterface
      * Update one payment with a status that needs a reason
      *
      * @param int|Payment $payment can be an int or a Payment entity
-     * @param int         $status
-     * @param string      $reason
+     * @param int $status
+     * @param string $reason
      *
      * @return int
      */

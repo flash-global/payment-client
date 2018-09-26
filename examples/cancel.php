@@ -5,7 +5,10 @@ use Fei\Service\Payment\Entity\Payment;
 
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 
-$payer = new Payer([Payer::OPTION_BASEURL => 'http://payment.dev:8005']);
+$payer = new Payer([
+    Payer::OPTION_BASEURL => 'http://payment.dev:8005',
+    Payer::OPTION_HEADER_AUTHORIZATION => 'key'
+]);
 $payer->setTransport(new BasicTransport());
 
 try {

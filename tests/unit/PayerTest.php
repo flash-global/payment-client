@@ -10,7 +10,6 @@ use Fei\Service\Payment\Client\Exception\PaymentException;
 use Fei\Service\Payment\Client\Payer;
 use Fei\Service\Payment\Client\Utils\Builder\SearchBuilder;
 use Fei\Service\Payment\Entity\Payment;
-use Guzzle\Http\Exception\BadResponseException;
 
 /**
  * Class PayerTest
@@ -58,7 +57,7 @@ class PayerTest extends Unit
             (new ResponseDescriptor())->setBody(1)
         );
         $payer->setTransport($transport);
-        $payer->setApiKey('toto');
+        $payer->setAuthorization('toto');
 
         $results = $payer->request($payment);
 

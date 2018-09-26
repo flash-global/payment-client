@@ -119,7 +119,10 @@ use Fei\ApiClient\Transport\BasicTransport;
 use Fei\ApiClient\Transport\BeanstalkProxyTransport;
 use Pheanstalk\Pheanstalk;
 
-$payer = new Payer([Payer::OPTION_BASEURL => 'https://payment.api']); // Put your payment API base URL here
+$payer = new Payer([
+    Payer::OPTION_BASEURL => 'http://payment.dev:8005',
+    Payer::OPTION_HEADER_AUTHORIZATION => 'key'
+]);
 $payer->setTransport(new BasicTransport());
 
 $proxy = new BeanstalkProxyTransport();
@@ -152,6 +155,7 @@ Only one option is available which can be passed either by the constructor or by
 | Option         | Description                                    | Type   | Possible Values                                | Default |
 |----------------|------------------------------------------------|--------|------------------------------------------------|---------|
 | OPTION_BASEURL | This is the server to which send the requests. | string | Any URL, including protocol but excluding path | -       |
+| OPTION_HEADER_AUTHORIZATION    | Api Key for authentification   | string | Any string value                               | ''      |
 
 **Note**: All the examples below are also available in the examples directory.
 
