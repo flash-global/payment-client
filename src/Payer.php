@@ -35,9 +35,6 @@ class Payer extends AbstractApiClient implements PayerInterface
             ->setUrl($this->buildUrl(self::API_PAYMENT_PATH_INFO));
 
         $request->setBodyParams(['payment' => \json_encode($payment->toArray())]);
-        if ($this->getAuthorization()) {
-            $request->addHeader('Authorization', $this->getAuthorization());
-        }
 
         $response = $this->send($request);
 
