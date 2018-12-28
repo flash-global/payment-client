@@ -142,7 +142,8 @@ There are several methods in `Payer` class, all listed in the following table:
 | search         | `SearchBuilder $search`                | `array`  |
 | cancel         | `Payment|int $payment, int $reason`    | `intger` |
 | reject         | `Payment|int $payment, int $reason`    | `intger` |
-| capture        | `Payment|int $payment, float $reason`  | `intger` |
+| capture        | `Payment|int $payment, float $amount`  | `intger` |
+| refund         | `Payment|int $payment, float $amount`  | `intger` |
 | getPaymentLink | `Payment|int|string $payment`  				| `string` |
 
 ## Client option

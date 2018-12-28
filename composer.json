@@ -16,14 +16,18 @@
     },
     "repositories": [
         {
-            "type": "composer",
-            "url": "https://composer.flash.global"
+            "type": "vcs",
+            "url": "git@github.com:flash-global/payment-common.git"
+        },
+        {
+            "type": "vcs",
+            "url": "git@github.com:flash-global/api-client.git"
         }
     ],
     "require": {
         "php": ">=5.5",
         "fei/api-client": "^1.1",
-        "fei/payment-common": "^2.4.0"
+        "fei/payment-common": "^2.6.0"
     },
     "require-dev": {
         "codeception/codeception": "^2.2",
@@ -32,5 +36,10 @@
         "squizlabs/php_codesniffer": "^2.7",
         "sebastian/phpcpd": "^2.0",
         "phpmd/phpmd": "^2.6"
+    },
+    "config": {
+        "platform": {
+            "php": "7.0.27"
+        }
     }
 }

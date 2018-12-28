@@ -24,16 +24,11 @@ class PayerTest extends Unit
 
         $payment = $this->getPaymentEntity();
 
-        $request1 = new RequestDescriptor();
-
         $transport = $this->createMock(SyncTransportInterface::class);
-        $transport->expects($this->once())->method('send')->withConsecutive(
-            [$this->callback(function (RequestDescriptor $requestDescriptor) use (&$request1) {
-                return $request1 = $requestDescriptor;
-            })]
-        )->willReturnOnConsecutiveCalls(
-            (new ResponseDescriptor())->setBody(1)
-        );
+        $transport->expects($this->once())
+            ->method('send')
+            ->willReturn((new ResponseDescriptor())->setBody(1));
+
         $payer->setTransport($transport);
 
         $results = $payer->request($payment);
@@ -46,14 +41,8 @@ class PayerTest extends Unit
         $payer = new Payer();
         $payment = $this->getPaymentEntity();
 
-        $request1 = new RequestDescriptor();
-
         $transport = $this->createMock(SyncTransportInterface::class);
-        $transport->expects($this->once())->method('send')->withConsecutive(
-            [$this->callback(function (RequestDescriptor $requestDescriptor) use (&$request1) {
-                return $request1 = $requestDescriptor;
-            })]
-        )->willReturnOnConsecutiveCalls(
+        $transport->expects($this->once())->method('send')->willReturn(
             (new ResponseDescriptor())->setBody(1)
         );
         $payer->setTransport($transport);
@@ -70,14 +59,8 @@ class PayerTest extends Unit
 
         $payment = $this->getPaymentEntity();
 
-        $request1 = new RequestDescriptor();
-
         $transport = $this->createMock(SyncTransportInterface::class);
-        $transport->expects($this->once())->method('send')->withConsecutive(
-            [$this->callback(function (RequestDescriptor $requestDescriptor) use (&$request1) {
-                return $request1 = $requestDescriptor;
-            })]
-        )->willReturnOnConsecutiveCalls(
+        $transport->expects($this->once())->method('send')->willReturn(
             (new ResponseDescriptor())->setBody(1)
         );
         $payer->setTransport($transport);
@@ -97,14 +80,8 @@ class PayerTest extends Unit
 
         $payer = new Payer();
 
-        $request1 = new RequestDescriptor();
-
         $transport = $this->createMock(SyncTransportInterface::class);
-        $transport->expects($this->once())->method('send')->withConsecutive(
-            [$this->callback(function (RequestDescriptor $requestDescriptor) use (&$request1) {
-                return $request1 = $requestDescriptor;
-            })]
-        )->willReturnOnConsecutiveCalls(
+        $transport->expects($this->once())->method('send')->willReturn(
             (new ResponseDescriptor())->setBody(json_encode([
                 "data" => [
                     "id" => $payment->getId(),
@@ -144,14 +121,8 @@ class PayerTest extends Unit
 
         $payer = new Payer();
 
-        $request1 = new RequestDescriptor();
-
         $transport = $this->createMock(SyncTransportInterface::class);
-        $transport->expects($this->once())->method('send')->withConsecutive(
-            [$this->callback(function (RequestDescriptor $requestDescriptor) use (&$request1) {
-                return $request1 = $requestDescriptor;
-            })]
-        )->willReturnOnConsecutiveCalls(
+        $transport->expects($this->once())->method('send')->willReturn(
             (new ResponseDescriptor())->setBody(json_encode([
                 'payments' => [ $payment->toArray() ]
             ]))
@@ -187,10 +158,6 @@ class PayerTest extends Unit
         $results = $payer->reject(1, 'fake-reason');
 
         $this->assertEquals(1, $results);
-    }
-
-    public function testUpdateAmount()
-    {
     }
 
     public function testSendWhenExceptionIsThrown()
@@ -237,14 +204,8 @@ class PayerTest extends Unit
 
         $payer = new Payer();
 
-        $request1 = new RequestDescriptor();
-
         $transport = $this->createMock(SyncTransportInterface::class);
-        $transport->expects($this->once())->method('send')->withConsecutive(
-            [$this->callback(function (RequestDescriptor $requestDescriptor) use (&$request1) {
-                return $request1 = $requestDescriptor;
-            })]
-        )->willReturnOnConsecutiveCalls(
+        $transport->expects($this->once())->method('send')->willReturn(
             (new ResponseDescriptor())->setBody(json_encode(1))
         );
         $payer->setTransport($transport);
@@ -265,14 +226,8 @@ class PayerTest extends Unit
 
         $payer = new Payer();
 
-        $request1 = new RequestDescriptor();
-
         $transport = $this->createMock(SyncTransportInterface::class);
-        $transport->expects($this->once())->method('send')->withConsecutive(
-            [$this->callback(function (RequestDescriptor $requestDescriptor) use (&$request1) {
-                return $request1 = $requestDescriptor;
-            })]
-        )->willReturnOnConsecutiveCalls(
+        $transport->expects($this->once())->method('send')->willReturn(
             (new ResponseDescriptor())->setBody(json_encode('http://fake-url'))
         );
         $payer->setTransport($transport);
