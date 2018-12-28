@@ -17,6 +17,7 @@ use Guzzle\Http\Exception\BadResponseException;
 class Payer extends AbstractApiClient implements PayerInterface
 {
     const API_PAYMENT_PATH_INFO = '/api/payments';
+    const API_REFUND_PATH_INFO = '/api/refunds';
 
     const OPTION_APIKEY = 'apiKey';
 
@@ -249,6 +250,26 @@ class Payer extends AbstractApiClient implements PayerInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function refund($payment, $amount)
+    {
+        if ($payment instanceof Payment) {
+            $payment = $payment->getUuid();
+        }
+
+        $request = (new RequestDescriptor())
+            ->setMethod('POST')
+            ->setUrl($this->buildUrl(self::API_REFUND_PATH_INFO . '/' . $payment))
+            ->setRawData(json_encode(['amount' => $amount * 100]));
+
+        /** @var Payment $payment */
+        $payment = $this->fetch($request);
+
+        return $payment;
+    }
+
+    /**
      * @param Payment $payment
      * @param string $from
      * @param string $to
@@ -299,6 +320,30 @@ class Payer extends AbstractApiClient implements PayerInterface
     }
 
     /**
+     * Update one payment entity
+     *
+     * @param Payment $payment
+     *
+     * @return int
+     */
+    public function update(Payment $payment)
+    {
+        $this->ensureTransportIsSet();
+
+        $request = (new RequestDescriptor())
+            ->setMethod('PUT')
+            ->setUrl($this->buildUrl(self::API_PAYMENT_PATH_INFO));
+
+        $request->setBodyParams(['payment' => \json_encode($payment->toArray())]);
+
+        $response = $this->send($request);
+
+        $paymentId = \json_decode($response->getBody(), true);
+
+        return $paymentId;
+    }
+
+    /**
      * Call the send method of the parent (method that can be mocked)
      *
      * @param RequestDescriptor $request
@@ -321,29 +366,5 @@ class Payer extends AbstractApiClient implements PayerInterface
         if (!$this->getTransport()) {
             throw new PaymentException('No transport has been set!');
         }
-    }
-
-    /**
-     * Update one payment entity
-     *
-     * @param Payment $payment
-     *
-     * @return int
-     */
-    public function update(Payment $payment)
-    {
-        $this->ensureTransportIsSet();
-
-        $request = (new RequestDescriptor())
-            ->setMethod('PUT')
-            ->setUrl($this->buildUrl(self::API_PAYMENT_PATH_INFO));
-
-        $request->setBodyParams(['payment' => \json_encode($payment->toArray())]);
-
-        $response = $this->send($request);
-
-        $paymentId = \json_decode($response->getBody(), true);
-
-        return $paymentId;
     }
 }

@@ -1,20 +1,21 @@
 <?php
+
 use Fei\ApiClient\Transport\BasicTransport;
 use Fei\Service\Payment\Client\Payer;
 use Fei\Service\Payment\Entity\Payment;
 
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 
-$payer = new Payer([Payer::OPTION_BASEURL => 'http://payment.dev:8005']);
+$payer = new Payer([Payer::OPTION_BASEURL => 'http://payment.localhost:8085']);
 $payer->setTransport(new BasicTransport());
 
 try {
     $payment = new Payment();
-    $payment->setExpirationDate(new \DateTime())
+    $payment->setExpirationDate(new \DateTime('+10 days'))
         ->setStatus(Payment::STATUS_PENDING)
         ->setRequiredPrice(456)
-        ->setVat(0.5)
-        ->setAuthorizedPayment(Payment::PAYMENT_PAYPAL|Payment::PAYMENT_PAYZEN|Payment::PAYMENT_STRIPE|Payment::PAYMENT_OGONE)
+        ->setVat(0.2)
+        ->setAuthorizedPayment(Payment::PAYMENT_PAYZEN)
         ->setCallbackUrl([
             "succeeded" => 'http://127.0.0.1/succeeded',
             "failed" => 'http://127.0.0.1/failed',

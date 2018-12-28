@@ -84,4 +84,14 @@ interface PayerInterface
      * @return string
      */
     public function getPaymentLink($payment);
+
+    /**
+     * Refund a payment
+     *
+     * @param string|Payment $payment A Payment uuid or a payment entity
+     * @param float $amount
+     *
+     * @return Payment The refund payment entity
+     */
+    public function refund($payment, $amount);
 }

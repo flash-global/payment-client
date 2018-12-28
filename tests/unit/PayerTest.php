@@ -10,7 +10,6 @@ use Fei\Service\Payment\Client\Exception\PaymentException;
 use Fei\Service\Payment\Client\Payer;
 use Fei\Service\Payment\Client\Utils\Builder\SearchBuilder;
 use Fei\Service\Payment\Entity\Payment;
-use Guzzle\Http\Exception\BadResponseException;
 
 /**
  * Class PayerTest
@@ -312,6 +311,38 @@ class PayerTest extends Unit
         $payer->expects($this->once())->method('send')->with($request);
 
         $payer->sendPaymentLinkByMail($payment, $from, $to);
+    }
+
+    public function testRefund()
+    {
+        $payment = new Payment([
+            'id' => 1,
+            'uuid' => 'test',
+            'status' => Payment::STATUS_SETTLED,
+            'requiredPrice' => 15
+        ]);
+
+        $payer = new Payer();
+
+        $request = (new RequestDescriptor())
+            ->setMethod('POST')
+            ->setUrl($payer->buildUrl(Payer::API_REFUND_PATH_INFO . '/test'))
+            ->setRawData(json_encode(['amount' => 8 * 100]));
+
+        $transport = $this->createMock(SyncTransportInterface::class);
+        $transport->expects($this->once())
+            ->method('send')
+            ->with($request, 0)
+            ->willReturn((new ResponseDescriptor())->setBody(json_encode([
+                'meta' => [
+                    'entity' => Payment::class
+                ],
+                'data' => (new Payment())->toArray()
+            ])));
+
+        $payer->setTransport($transport);
+
+        $payer->refund($payment, 8);
     }
 
     protected function getPaymentEntity()
